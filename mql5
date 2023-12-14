@@ -1,0 +1,62 @@
+
+//+------------------------------------------------------------------+
+//|                                            MACD Dashboard Scanner |
+//|                                             forexroboteasy.com   |
+//|                                        Developed by Forex Robot Easy Team |
+//+------------------------------------------------------------------+
+#property indicator_chart_window
+#property indicator_buffers 1
+#property indicator_plots   1
+
+input ENUM_TIMEFRAMES TimeFrame = PERIOD_CURRENT; // Default timeframe
+input int Fast_EMA_Period = 12; // Fast EMA period
+input int Slow_EMA_Period = 26; // Slow EMA period
+input int Signal_SMA_Period = 9; // Signal SMA period
+
+double macdBuffer[]; // MACD buffer
+
+//+------------------------------------------------------------------+
+//| Custom indicator initialization function                         |
+//+------------------------------------------------------------------+
+int OnInit()
+{
+    SetIndexStyle(0, DRAW_LINE);
+    SetIndexBuffer(0, macdBuffer);
+  
+    return(INIT_SUCCEEDED);
+}
+
+//+------------------------------------------------------------------+
+//| Custom indicator deinitialization function                       |
+//+------------------------------------------------------------------+
+void OnDeinit(const int reason)
+{
+    // Perform any necessary cleanup tasks here
+}
+
+//+------------------------------------------------------------------+
+//| Custom indicator calculation function                            |
+//+------------------------------------------------------------------+
+int OnCalculate(const int rates_total,
+                const int prev_calculated,
+                const datetime &time[],
+                const double &open[],
+                const double &high[],
+                const double &low[],
+                const double &close[],
+                const long &tick_volume[],
+                const long &volume[],
+                const int &spread[])
+{
+    int limit = rates_total - prev_calculated;
+  
+    // Calculate MACD for the specified timeframe
+    ArraySetAsSeries(close, true);
+    ArraySetAsSeries(macdBuffer, true);
+    int calculated = iMACD(Symbol(), TimeFrame, Fast_EMA_Period, Slow_EMA_Period, Signal_SMA_Period, PRICE_CLOSE, macdBuffer);
+  
+    // Perform additional analysis or trading decisions based on MACD values
+    // ...
+  
+    return(rates_total);
+}
